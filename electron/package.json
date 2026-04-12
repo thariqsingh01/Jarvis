@@ -4,7 +4,7 @@
   "description": "Jarvis Desktop Assistant",
   "main": "main.js",
   "scripts": {
-    "start": "concurrently \"python ../backend/app/main.py\" \"electron .\""
+  "start": "concurrently \"cd ../backend && py -3.11 -m uvicorn app.main:app --reload\" \"electron .\""
   },
   "devDependencies": {
     "electron": "^40.6.1"

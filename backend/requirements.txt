@@ -1,9 +1,14 @@
 fastapi==0.111.1
-pydantic==2.7.2
 uvicorn==0.23.2
+pydantic==2.7.2
+
 psutil==5.9.7
 comtypes==1.1.14
 pycaw==20181226
-Pillow==10.1.0
+
+Pillow>=10.0.0
 pyttsx3==2.90
-SpeechRecognition==3.12.0
+
+vosk
+sounddevice
+numpy
