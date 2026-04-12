@@ -1,0 +1,12 @@
+{
+  "name": "jarvis-electron",
+  "version": "1.0.0",
+  "description": "Jarvis Desktop Assistant",
+  "main": "main.js",
+  "scripts": {
+    "start": "concurrently \"python ../backend/app/main.py\" \"electron .\""
+  },
+  "devDependencies": {
+    "electron": "^40.6.1"
+  }
+}
