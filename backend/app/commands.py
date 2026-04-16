@@ -63,15 +63,15 @@ def handle_command(cmd):
     # Apps & Websites
     # ----------------------
     if "spotify" in cmd:
-        os.system("start spotify:")
+        subprocess.Popen("start spotify:", shell=True)
         return "Opening Spotify."
 
     elif "chrome" in cmd and "close" not in cmd:
-        os.system("start chrome")
+        subprocess.Popen("start chrome:", shell=True)
         return "Opening Google Chrome."
 
     elif "vscode" in cmd or "visual studio code" in cmd:
-        subprocess.Popen("code", shell=True)
+        subprocess.Popen("start code:", shell=True)
         return "Launching Visual Studio Code."
 
     elif "youtube" in cmd:
@@ -107,15 +107,15 @@ def handle_command(cmd):
     # System Control
     # ----------------------
     elif "lock computer" in cmd:
-        os.system("rundll32.exe user32.dll,LockWorkStation")
+        subprocess.run("rundll32.exe user32.dll,LockWorkStation", shell=True)
         return "Locking workstation."
 
     elif "restart computer" in cmd:
-        os.system("shutdown /r /t 5")
+        subprocess.run("shutdown /r /t 5", shell=True)
         return "Restarting in 5 seconds."
 
     elif "shutdown computer" in cmd:
-        os.system("shutdown /s /t 5")
+        subprocess.run("shutdown /s /t 5", shell=True)
         return "Shutting down in 5 seconds."
 
     elif "set volume to" in cmd:

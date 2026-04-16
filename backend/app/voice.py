@@ -7,43 +7,36 @@ import sounddevice as sd
 from vosk import Model, KaldiRecognizer
 
 # ==========================
-# TEXT TO SPEECH (STABLE)
+# TTS (FIXED - SAFE FOR WINDOWS)
 # ==========================
 
-engine = pyttsx3.init("sapi5")
-engine.setProperty("rate", 170)
-engine.setProperty("volume", 1.0)
+def speak(text: str):
+    """
+    Safe non-blocking TTS.
+    Creates a fresh engine per call to avoid SAPI5 lockups.
+    """
 
-voices = engine.getProperty("voices")
-engine.setProperty("voice", voices[0].id)
-
-# Queue system prevents crashes
-tts_queue = queue.Queue()
-
-
-def _tts_worker():
-    """Single background thread handling ALL speech"""
-    while True:
-        text = tts_queue.get()
+    def run():
         try:
+            engine = pyttsx3.init("sapi5")
+            engine.setProperty("rate", 170)
+            engine.setProperty("volume", 1.0)
+
+            voices = engine.getProperty("voices")
+            engine.setProperty("voice", voices[0].id)
+
             engine.say(text)
             engine.runAndWait()
+            engine.stop()
+
         except Exception as e:
             print("❌ TTS Error:", e)
 
-
-# Start worker ONCE
-threading.Thread(target=_tts_worker, daemon=True).start()
-
-
-def speak(text: str):
-    """Non-blocking speech function"""
-    if text:
-        tts_queue.put(text)
+    threading.Thread(target=run, daemon=True).start()
 
 
 # ==========================
-# VOSK OFFLINE SPEECH MODEL
+# VOSK SETUP
 # ==========================
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -53,7 +46,6 @@ if not os.path.exists(MODEL_PATH):
     raise Exception(f"Vosk model not found at: {MODEL_PATH}")
 
 model = Model(MODEL_PATH)
-recognizer = KaldiRecognizer(model, 16000)
 
 audio_queue = queue.Queue()
 
@@ -65,14 +57,21 @@ def audio_callback(indata, frames, time, status):
 
 
 # ==========================
-# LISTEN FUNCTION
+# LISTEN FUNCTION (FIXED)
 # ==========================
 
 def listen():
     """
     Offline speech recognition using Vosk.
-    Blocks until a full command is detected.
+    Clean reset every call to prevent "works once" bug.
     """
+
+    # 🔥 IMPORTANT FIX 1: reset recognizer every call
+    recognizer = KaldiRecognizer(model, 16000)
+
+    # 🔥 IMPORTANT FIX 2: clear old audio chunks
+    while not audio_queue.empty():
+        audio_queue.get()
 
     try:
         with sd.RawInputStream(
@@ -106,6 +105,5 @@ def listen():
 # ==========================
 
 def list_microphones():
-    """Useful for debugging mic issues"""
     import speech_recognition as sr
     return sr.Microphone.list_microphone_names()

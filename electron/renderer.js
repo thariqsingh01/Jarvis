@@ -33,6 +33,13 @@ function updateLog(text) {
 // ----------------------------
 // Send Typed Command
 // ----------------------------
+input.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault(); // stops newline in input (if textarea)
+    sendBtn.click();
+  }
+});
+
 sendBtn.addEventListener("click", async () => {
   const cmd = input.value.trim();
   if (!cmd) return;

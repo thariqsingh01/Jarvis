@@ -1,3 +1,8 @@
+require('electron-reload')(__dirname, {
+    electron: require(`${__dirname}/node_modules/electron`)
+});
+
+
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
 
@@ -13,6 +18,7 @@ function createWindow() {
   });
 
   win.loadFile('index.html');
+  //win.webContents.openDevTools();
 }
 
 app.whenReady().then(createWindow);
