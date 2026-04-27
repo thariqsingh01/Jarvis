@@ -2,27 +2,205 @@
 <html>
 <head>
   <title>Jarvis Desktop</title>
+
   <style>
-    body { font-family: Arial; background: #080808; color: white; margin: 0; }
-    #log { width: 100%; height: 20vh; background: #3b3a3a; overflow-y: auto; padding: 10px;  }
-    #controls { display: flex; gap: 10px; padding: 10px; }
-    button { padding: 10px; font-size: 16px; }
-    input { flex: 1; padding: 10px; font-size: 16px; }
+    body {
+      font-family: Arial;
+      background: radial-gradient(circle at center, #05070d, #000000);
+      color: white;
+      margin: 0;
+    }
+
+    #controls {
+      display: flex;
+      gap: 10px;
+      padding: 10px;
+    }
+
+    button {
+      padding: 10px;
+      font-size: 16px;
+      background: #0a0f1c;
+      color: #00aaff;
+      border: 1px solid #00aaff55;
+      cursor: pointer;
+    }
+
+    input {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      background: #0a0f1c;
+      color: white;
+      border: 1px solid #00aaff55;
+    }
+
+    #log {
+      width: 100%;
+      height: 20vh;
+      background: #0a0f1c;
+      overflow-y: auto;
+      padding: 10px;
+      border-top: 1px solid #00aaff22;
+    }
+
+    /* ===== JARVIS ANIMATION ===== */
+
+    .jarvis-container {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      margin: 20px auto;
+    }
+
+    .core {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background: #00aaff;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow:
+        0 0 20px #00aaff,
+        0 0 40px #0077ff,
+        0 0 60px #0033ff;
+    }
+
+    .ring {
+      position: absolute;
+      border: 1px solid rgba(0, 170, 255, 0.3);
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .ring1 {
+      width: 120px;
+      height: 120px;
+      animation: rotate 6s linear infinite;
+    }
+
+    .ring2 {
+      width: 180px;
+      height: 180px;
+      animation: rotateReverse 10s linear infinite;
+    }
+
+    .ring3 {
+      width: 150px;
+      height: 150px;
+      border-style: dashed;
+      animation: rotate 15s linear infinite;
+    }
+
+    .pulse {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: rgba(0, 170, 255, 0.2);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0;
+    }
+
+    /* Animations */
+    @keyframes rotate {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to   { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    @keyframes rotateReverse {
+      from { transform: translate(-50%, -50%) rotate(360deg); }
+      to   { transform: translate(-50%, -50%) rotate(0deg); }
+    }
+
+    @keyframes pulseAnim {
+      0%   { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+      50%  { transform: translate(-50%, -50%) scale(1.6); opacity: 0.2; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+    }
+
+    /* SPEAKING STATE */
+    .speaking .pulse {
+      animation: pulseAnim 0.5s infinite;
+      opacity: 1;
+    }
+
+    .speaking .core {
+      box-shadow:
+        0 0 30px #00ccff,
+        0 0 60px #0099ff,
+        0 0 90px #0033ff;
+    }
+
   </style>
 </head>
-<body>  
+
+<body>
+
   <div id="controls">
     <input id="commandInput" placeholder="Type your command here..." />
-    <button id="sendBtn">Send</button>
-    <button id="listenBtn">🎤 Listen</button>
+    <button onclick="sendCommand()">Send</button>
+    <button onclick="toggleListening()">🎤 Listen</button>
+  </div>
+
+  <div class="jarvis-container" id="jarvis">
+    <div class="core"></div>
+    <div class="ring ring1"></div>
+    <div class="ring ring2"></div>
+    <div class="ring ring3"></div>
+    <div class="pulse"></div>
   </div>
 
   <div id="log"></div>
 
-  <div id="jarvis-animation" style="width: 200px; height: 200px; margin: 10px auto;"></div>
+  <script>
+    const jarvis = document.getElementById("jarvis");
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.1/lottie.min.js"></script>
-  <script src="renderer.js"></script>
+    function logMessage(msg) {
+      const log = document.getElementById("log");
+      log.innerHTML += "<div>" + msg + "</div>";
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function sendCommand() {
+      const input = document.getElementById("commandInput");
+      logMessage("You: " + input.value);
+
+      // simulate speaking response
+      speak("Processing your request");
+
+      input.value = "";
+    }
+
+    function toggleListening() {
+      logMessage("Listening...");
+    }
+
+    function speak(text) {
+      logMessage("Jarvis: " + text);
+
+      setSpeaking(true);
+
+      // simulate duration (replace with backend later)
+      setTimeout(() => {
+        setSpeaking(false);
+      }, 2500);
+    }
+
+    function setSpeaking(isSpeaking) {
+      if (isSpeaking) {
+        jarvis.classList.add("speaking");
+      } else {
+        jarvis.classList.remove("speaking");
+      }
+    }
+  </script>
+
 </body>
 </html>
-
