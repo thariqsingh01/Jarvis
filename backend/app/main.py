@@ -25,14 +25,16 @@ def root():
 
 @app.post("/listen")
 def listen_route():
+    print("🔥 /listen called")
     command = listen()
+    print("✅ heard:", command)
     return {"command": command}
 
 
 @app.post("/speak")
 def speak_route(request: CommandRequest):
-    speak(request.text)
-    return {"message": "Speaking"}
+    duration = speak(request.text)
+    return {"duration": duration}
 
 
 @app.post("/command")

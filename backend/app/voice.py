@@ -1,4 +1,6 @@
+import time
 import pyttsx3
+import pythoncom
 import threading
 import queue
 import json
@@ -10,29 +12,29 @@ from vosk import Model, KaldiRecognizer
 # TTS (FIXED - SAFE FOR WINDOWS)
 # ==========================
 
+
 def speak(text: str):
-    """
-    Safe non-blocking TTS.
-    Creates a fresh engine per call to avoid SAPI5 lockups.
-    """
+    try:
+        pythoncom.CoInitialize()  # 🔥 REQUIRED for Windows threads
 
-    def run():
-        try:
-            engine = pyttsx3.init("sapi5")
-            engine.setProperty("rate", 170)
-            engine.setProperty("volume", 1.0)
+        engine = pyttsx3.init()
+        engine.setProperty("rate", 170)
 
-            voices = engine.getProperty("voices")
-            engine.setProperty("voice", voices[0].id)
+        start = time.time()
 
-            engine.say(text)
-            engine.runAndWait()
-            engine.stop()
+        engine.say(text)
+        engine.runAndWait()
 
-        except Exception as e:
-            print("❌ TTS Error:", e)
+        duration = time.time() - start
 
-    threading.Thread(target=run, daemon=True).start()
+        return duration
+
+    except Exception as e:
+        print("❌ TTS Error:", e)
+        return 2.5  # fallback duration
+
+    finally:
+        pythoncom.CoUninitialize() 
 
 
 # ==========================

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Jarvis Desktop</title>
 
@@ -110,19 +111,40 @@
 
     /* Animations */
     @keyframes rotate {
-      from { transform: translate(-50%, -50%) rotate(0deg); }
-      to   { transform: translate(-50%, -50%) rotate(360deg); }
+      from {
+        transform: translate(-50%, -50%) rotate(0deg);
+      }
+
+      to {
+        transform: translate(-50%, -50%) rotate(360deg);
+      }
     }
 
     @keyframes rotateReverse {
-      from { transform: translate(-50%, -50%) rotate(360deg); }
-      to   { transform: translate(-50%, -50%) rotate(0deg); }
+      from {
+        transform: translate(-50%, -50%) rotate(360deg);
+      }
+
+      to {
+        transform: translate(-50%, -50%) rotate(0deg);
+      }
     }
 
     @keyframes pulseAnim {
-      0%   { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
-      50%  { transform: translate(-50%, -50%) scale(1.6); opacity: 0.2; }
-      100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+      0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.6;
+      }
+
+      50% {
+        transform: translate(-50%, -50%) scale(1.6);
+        opacity: 0.2;
+      }
+
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.6;
+      }
     }
 
     /* SPEAKING STATE */
@@ -137,7 +159,6 @@
         0 0 60px #0099ff,
         0 0 90px #0033ff;
     }
-
   </style>
 </head>
 
@@ -168,29 +189,60 @@
       log.scrollTop = log.scrollHeight;
     }
 
-    function sendCommand() {
+    async function sendCommand() {
       const input = document.getElementById("commandInput");
-      logMessage("You: " + input.value);
+      const text = input.value;
 
-      // simulate speaking response
-      speak("Processing your request");
+      logMessage("You: " + text);
+
+      // 🔥 send to backend
+      const res = await window.JarvisAPI.command(text);
+
+      if (res.shutdown) {
+        window.close();
+        return;
+      }
+
+      if (res.response) {
+        await speak(res.response); // real response
+      } else {
+        logMessage("Jarvis: No response");
+      }
 
       input.value = "";
     }
 
-    function toggleListening() {
+    async function toggleListening() {
       logMessage("Listening...");
+
+      const res = await window.JarvisAPI.listen();
+
+      if (!res.command) {
+        logMessage("❌ No speech detected");
+        return;
+      }
+
+      logMessage("You: " + res.command);
+
+      const cmdRes = await window.JarvisAPI.command(res.command);
+
+      if (cmdRes.response) {
+        await speak(cmdRes.response);
+      }
     }
 
-    function speak(text) {
+    async function speak(text) {
       logMessage("Jarvis: " + text);
 
       setSpeaking(true);
 
-      // simulate duration (replace with backend later)
+      const res = await window.JarvisAPI.speak(text);
+
+      const duration = res.duration || 2.5;
+
       setTimeout(() => {
         setSpeaking(false);
-      }, 2500);
+      }, duration * 1000);
     }
 
     function setSpeaking(isSpeaking) {
@@ -203,4 +255,5 @@
   </script>
 
 </body>
+
 </html>
