@@ -63,15 +63,15 @@ def handle_command(cmd):
     # Apps & Websites
     # ----------------------
     if "spotify" in cmd:
-        subprocess.Popen("start spotify:", shell=True)
+        subprocess.Popen("start spotify", shell=True)
         return "Opening Spotify."
-
+    
     elif "chrome" in cmd and "close" not in cmd:
-        subprocess.Popen("start chrome:", shell=True)
+        subprocess.Popen("start chrome", shell=True)
         return "Opening Google Chrome."
 
     elif "vscode" in cmd or "visual studio code" in cmd:
-        subprocess.Popen("start code:", shell=True)
+        subprocess.Popen("start code", shell=True)
         return "Launching Visual Studio Code."
 
     elif "youtube" in cmd:

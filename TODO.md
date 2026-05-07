@@ -1,9 +1,8 @@
-# Reverted Voice Fix Changes
 
-All changes reverted to original state:
-- backend/app/voice.py: Original timeouts/logging/mic_index
-- backend/app/main.py: Original /listen without device_index or list_mics
-- electron/renderer.js: Original button behavior
-- Removed TODO.md
+- [ ] Inspect current speech flow (frontend vs backend) to locate duplicate TTS calls
+- [x] Found duplication: backend /command route can call speak(), while frontend also calls speak() on response
+- [x] Remove backend speak() calls from backend/app/main.py /command route and return strings instead
+- [x] Ensure frontend continues to be the only place that calls JarvisAPI.speak()
 
-App restored. Original issue persists, but per request.
+- [x] Run app and verify single utterance per entered command
+

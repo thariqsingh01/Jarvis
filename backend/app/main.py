@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 import datetime
-from app.voice import speak, listen
-from app.commands import handle_command
+from .voice import listen
+from .commands import handle_command
 
 app = FastAPI()
 
@@ -33,6 +33,8 @@ def listen_route():
 
 @app.post("/speak")
 def speak_route(request: CommandRequest):
+    # kept for manual testing; frontend main flow uses this
+    from .voice import speak
     duration = speak(request.text)
     return {"duration": duration}
 
@@ -50,14 +52,16 @@ def command_route(request: CommandRequest):
         if note_content:
             with open("jarvis_notes.txt", "a", encoding="utf-8") as f:
                 f.write(f"[{datetime.datetime.now()}] {note_content}\n")
-            speak("Note saved.")
+            # frontend handles TTS
+            # speak("Note saved.")
             return {"response": "Note saved."}
         else:
-            speak("Note cancelled.")
+            # frontend handles TTS
+            # speak("Note cancelled.")
             return {"response": "Note cancelled."}
 
-    if response:
-        speak(response)
+    # if response:
+    #     speak(response)
 
     return {"response": response}
 
