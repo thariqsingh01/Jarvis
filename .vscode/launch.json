@@ -1,18 +1,38 @@
 {
   "version": "0.2.0",
+  "compounds": [
+    {
+      "name": "Jarvis Full Debug",
+      "configurations": [
+        "FastAPI Backend",
+        "Electron Frontend"
+      ]
+    }
+  ],
   "configurations": [
     {
-      "name": "FastAPI Debug",
-      "type": "python",
+      "name": "FastAPI Backend",
+      "type": "debugpy",
       "request": "launch",
       "module": "uvicorn",
       "args": [
-        "backend.app.main:app",
+        "app.main:app",
         "--reload"
       ],
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}/backend",
       "console": "integratedTerminal",
       "justMyCode": true
+    },
+    {
+      "name": "Electron Frontend",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/electron",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "start"
+      ],
+      "console": "integratedTerminal"
     }
   ]
 }
