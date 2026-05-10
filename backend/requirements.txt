@@ -12,3 +12,6 @@ pyttsx3==2.90
 vosk
 sounddevice
 numpy
+
+pyaudio
+tensorflow

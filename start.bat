@@ -1,16 +1,22 @@
 @echo off
 echo Starting Jarvis...
 
-:: Start backend (FastAPI)
-cd backend
-start cmd /k "py -3.11 -m uvicorn app.main:app --reload"
+:: Go to project root (important for reliability)
+cd /d %~dp0
 
-:: Wait a few seconds
-timeout /t 5
+:: Activate virtual environment
+call venv\Scripts\activate
+
+:: Start backend (FastAPI inside venv)
+echo Starting FastAPI backend...
+start cmd /k "cd backend && python -m uvicorn app.main:app --reload"
+
+:: Wait for backend to initialize
+timeout /t 5 >nul
 
 :: Start Electron frontend
-cd ..\electron
-start cmd /k "npm start"
+echo Starting Electron frontend...
+start cmd /k "cd electron && npm start"
 
-echo Jarvis started!
+echo Jarvis started successfully!
 pause
