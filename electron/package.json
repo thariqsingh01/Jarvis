@@ -4,9 +4,11 @@
   "description": "Jarvis Desktop Assistant",
   "main": "main.js",
   "scripts": {
-  "start": "concurrently \"cd ../backend && py -3.11 -m uvicorn app.main:app --reload\" \"electron .\""
+    "start": "concurrently \"cd ../backend && py -3.11 -m uvicorn app.main:app --reload\" \"electron .\""
   },
   "devDependencies": {
-    "electron": "^40.6.1"
+    "concurrently": "^10.0.4",
+    "electron": "^40.6.1",
+    "electron-reload": "^2.0.0-alpha.1"
   }
 }
